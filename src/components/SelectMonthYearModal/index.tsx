@@ -13,14 +13,14 @@ import styles from './styles';
 
 interface IProps {
   visible: boolean;
-  setDateSelected: (value: Date) => void;
+  setMonthSelected: (value: Date) => void;
   setVisible: (value: boolean) => void;
 }
 
 const today = new Date();
 
 const SelectMonthYearModal = forwardRef(
-  ({visible, setDateSelected, setVisible}: IProps, ref) => {
+  ({visible, setMonthSelected, setVisible}: IProps, ref) => {
     useImperativeHandle(ref, () => ({
       date,
       showPicker,
@@ -42,7 +42,7 @@ const SelectMonthYearModal = forwardRef(
         showPicker(false);
         setVisible(false);
         setDate(selectedDate);
-        setDateSelected(selectedDate);
+        setMonthSelected(selectedDate);
         // console.warn('2', event, newDate);
       },
       [date, showPicker],

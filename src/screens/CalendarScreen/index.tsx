@@ -14,6 +14,7 @@ import HeaderAction from 'components/HeaderAction';
 import ImageLoading from 'components/ImageLoading';
 import SelectMonthYearModal from 'components/SelectMonthYearModal';
 import Images from 'common/Images';
+import Constants from 'common/Constants';
 import {getDayByMonth} from 'utils/TransformData';
 import {TaskByDay} from '../../fakeData/Calendar';
 
@@ -24,6 +25,11 @@ interface ItemType {
   starTime: string[];
   time: string;
   color: string;
+}
+interface DayItemType {
+  day: any;
+  dayOnWeek: string;
+  isToday: boolean;
 }
 
 const today = new Date();
@@ -45,42 +51,89 @@ const monthNames = [
 const CalendarScreen = () => {
   const refModal = useRef<any>(null);
 
-  const [daysList, setDaysList] = useState([]);
+  const [daysList, setDaysList] = useState<Array<DayItemType>>([]);
   const [currentDay, setCurrentDay] = useState({
     day: today.getDate(),
     month: monthNames[today.getMonth()],
     monthValue: today.getMonth(),
   });
-  const [dateSelected, setDateSelected] = useState(today);
+  const [monthSelected, setMonthSelected] = useState(today);
+  const [firstRun, setFirstRun] = useState(false);
+
+  // for IOS
   const [visible, setVisible] = useState(false);
 
-  // useEffect(() => {
-  //   setDaysList(getDayByMonth(today.getFullYear(), today.getMonth()));
-  // }, []);
+  // for Android
+  const [date, setDate] = useState(today);
+  const [show, setShow] = useState(false);
+
+  const showPicker = useCallback((value: any) => {
+    setShow(value);
+  }, []);
+
+  const onValueChange = useCallback(
+    (event: any, newDate: any) => {
+      const selectedDate = newDate || date;
+
+      showPicker(false);
+      setDate(selectedDate);
+      setMonthSelected(selectedDate);
+    },
+    [date, showPicker],
+  );
 
   useEffect(() => {
-    // if (
-    //   currentDay.day !== refModal?.current?.date?.getDate() ||
-    //   currentDay.monthValue !== refModal?.current?.date?.getMonth()
-    // ) {
-    //   setCurrentDay({
-    //     day: refModal.current.date.getDate(),
-    //     month: monthNames[refModal.current.date.getMonth()],
-    //     monthValue: refModal.current.date.getMonth(),
-    //   });
     const result = getDayByMonth(
-      dateSelected.getFullYear(),
-      dateSelected.getMonth(),
+      monthSelected.getFullYear(),
+      monthSelected.getMonth(),
     );
-    setDaysList(result);
-    console.warn('1', dateSelected, result);
-    // }
-  }, [dateSelected]);
+    const indexSelectItem = result.findIndex(
+      (i: DayItemType) => i.day === monthSelected.getDate(),
+    );
+    if (indexSelectItem !== -1) {
+      result[indexSelectItem].isToday = true;
+      setDaysList(result);
+      setFirstRun(true);
+    } else {
+      setDaysList(result);
+      setFirstRun(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (firstRun) {
+      const result = getDayByMonth(
+        monthSelected.getFullYear(),
+        monthSelected.getMonth(),
+      );
+      setDaysList(result);
+    }
+  }, [monthSelected]);
 
   const showSelectTime = useCallback(() => {
-    refModal?.current?.showPicker(true);
-    // setVisible(true);
+    if (Constants.isIOS) {
+      refModal?.current?.showPicker(true);
+    } else {
+      showPicker(true);
+    }
   }, []);
+
+  const onSelectDay = (day: number) => {
+    const result: Array<DayItemType> = [...daysList];
+    for (const i in result) {
+      if (result[i]?.day === day) {
+        result[i].isToday = true;
+        setCurrentDay({
+          day: day,
+          month: monthNames[monthSelected.getMonth()],
+          monthValue: monthSelected.getMonth(),
+        });
+      } else {
+        result[i].isToday = false;
+      }
+    }
+    setDaysList(result);
+  };
 
   const renderTaskItem: ListRenderItem<ItemType> = useCallback(({item}) => {
     return (
@@ -99,10 +152,13 @@ const CalendarScreen = () => {
     );
   }, []);
 
-  const renderDayItem: ListRenderItem<any> = useCallback(({item}) => {
+  const renderDayItem: ListRenderItem<any> = ({item}) => {
     if (item.isToday) {
       return (
-        <TouchableOpacity activeOpacity={0.7} style={styles.dateActiveBtn}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.dateActiveBtn}
+          onPress={() => onSelectDay(item.day)}>
           <Text style={styles.dateTxt}>{item.dayOnWeek}</Text>
           <View style={styles.circleDayActiveView}>
             <Text style={styles.dayActiveTxt}>{item.day}</Text>
@@ -111,7 +167,10 @@ const CalendarScreen = () => {
       );
     } else {
       return (
-        <TouchableOpacity activeOpacity={0.7} style={styles.dateBtn}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.dateBtn}
+          onPress={() => onSelectDay(item.day)}>
           <Text style={styles.dateTxt}>{item.dayOnWeek}</Text>
           <View style={styles.circleDayView}>
             <Text style={styles.dayTxt}>{item.day}</Text>
@@ -119,7 +178,7 @@ const CalendarScreen = () => {
         </TouchableOpacity>
       );
     }
-  }, []);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -155,12 +214,25 @@ const CalendarScreen = () => {
         ItemSeparatorComponent={() => <View style={styles.separatorItem} />}
       />
 
-      <SelectMonthYearModal
-        ref={refModal}
-        visible={visible}
-        setDateSelected={setDateSelected}
-        setVisible={setVisible}
-      />
+      {Constants.isIOS ? (
+        <SelectMonthYearModal
+          ref={refModal}
+          visible={visible}
+          setMonthSelected={setMonthSelected}
+          setVisible={setVisible}
+        />
+      ) : (
+        <>
+          {show && (
+            <MonthPicker
+              onChange={onValueChange}
+              value={date}
+              maximumDate={today}
+              mode="full"
+            />
+          )}
+        </>
+      )}
     </SafeAreaView>
   );
 };

@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: scaleSize(10),
+    borderColor: Colors.Color_6941C6,
+    borderWidth: scaleSize(1),
   },
   dayActiveTxt: {
     fontWeight: '500',
