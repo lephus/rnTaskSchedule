@@ -3,6 +3,7 @@ import {TouchableOpacity, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useSelector} from 'react-redux';
 
 import {navigationRef} from './RootNavigation';
 
@@ -10,6 +11,7 @@ import ImageLoading from 'components/ImageLoading';
 import Colors from 'common/Colors';
 import Images from 'common/Images';
 import {scaleFont, scaleHeightSize, scaleSize} from 'common/mixins';
+import {selectUser} from 'slices';
 
 import OnboardingScreen from 'screens/OnboardingScreen';
 import HomeScreen from 'screens/HomeScreen';
@@ -167,11 +169,13 @@ function AppStack() {
   );
 }
 
-class AppNavigator extends React.Component {
-  render() {
-    return (
-      <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator>
+const AppNavigator = () => {
+  const user = useSelector(selectUser);
+
+  return (
+    <NavigationContainer ref={navigationRef}>
+      <Stack.Navigator>
+        {user.userName.length === 0 && (
           <Stack.Screen
             name="OnboardingScreen"
             component={OnboardingScreen}
@@ -179,32 +183,32 @@ class AppNavigator extends React.Component {
               headerShown: false,
             }}
           />
-          <Stack.Screen
-            name="App"
-            component={AppStack}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="CategoryDetailScreen"
-            component={CategoryDetailScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="TaskDetailScreen"
-            component={TaskDetailScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
-}
+        )}
+        <Stack.Screen
+          name="App"
+          component={AppStack}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CategoryDetailScreen"
+          component={CategoryDetailScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="TaskDetailScreen"
+          component={TaskDetailScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 const styles = StyleSheet.create({
   bottomTabBtn: {

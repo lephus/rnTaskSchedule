@@ -27,9 +27,26 @@ const styles = StyleSheet.create({
     fontSize: scaleFont(20),
   },
 
+  btnView: {
+    paddingVertical: scaleSize(10),
+    marginLeft: scaleSize(0),
+    marginRight: scaleSize(0),
+    fontWeight: '600',
+    fontSize: scaleFont(20),
+  },
+  iconStyle: {
+    width: scaleSize(20),
+    height: scaleSize(20),
+  },
+
   descriptionTxt: {
     fontWeight: '500',
     fontSize: scaleFont(14),
+  },
+  descriptionInput: {
+    fontWeight: '500',
+    fontSize: scaleFont(14),
+    height: scaleSize(50),
   },
 
   time: {
@@ -62,7 +79,7 @@ const styles = StyleSheet.create({
   },
   onProgressStatusTxt: {
     fontWeight: '500',
-    fontSize: scaleFont(12),
+    fontSize: scaleFont(14),
     color: Colors.Color_039855,
   },
 
@@ -89,6 +106,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: scaleFont(16),
     marginLeft: scaleSize(10),
+  },
+
+  addNameBtn: {
+    backgroundColor: Colors.Color_F9F9FB,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: scaleSize(15),
+    paddingHorizontal: scaleSize(10),
+    paddingVertical: scaleSize(20),
+    borderRadius: scaleSize(10),
+  },
+  addName: {
+    fontWeight: '500',
+    fontSize: scaleFont(16),
+    color: Colors.Color_B9C0D4,
   },
 });
 

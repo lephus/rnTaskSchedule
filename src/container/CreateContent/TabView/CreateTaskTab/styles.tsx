@@ -21,15 +21,17 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(22),
     marginBottom: scaleSize(7),
   },
-
-  nameTxt: {
+  btnView: {
+    paddingVertical: scaleSize(10),
+    marginLeft: scaleSize(0),
+    marginRight: scaleSize(0),
     fontWeight: '600',
     fontSize: scaleFont(20),
   },
-
-  descriptionTxt: {
+  descriptionInput: {
     fontWeight: '500',
     fontSize: scaleFont(14),
+    height: scaleSize(50),
   },
 
   time: {
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
   },
   onProgressStatusTxt: {
     fontWeight: '500',
-    fontSize: scaleFont(12),
+    fontSize: scaleFont(14),
     color: Colors.Color_039855,
   },
 

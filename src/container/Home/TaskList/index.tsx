@@ -1,14 +1,29 @@
 import React, {useCallback} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 
 import styles from './styles';
 import ImageLoading from 'components/ImageLoading';
 import Images from 'common/Images';
 import {navigate} from 'navigation/RootNavigation';
-import {taskAtHome} from '../../../fakeData/Home';
+import {selectTask, getTaskDetail} from 'slices';
+import {renderStatusTxt, formatTxTDate} from 'utils/TransformData';
+import {getDistanceBetweenTwoDate} from 'utils/DateHelpers';
+import {TaskItem} from 'interface';
 
-const TaskList = () => {
-  const goToDetail = () => {
+interface IProps {
+  indexTab: number;
+}
+
+const TaskList = ({indexTab}: IProps) => {
+  const dispatch = useDispatch();
+  const taskReducer = useSelector(selectTask);
+
+  const today = new Date();
+  const {list} = taskReducer;
+
+  const goToDetail = (id: string) => {
+    dispatch(getTaskDetail(id));
     navigate('TaskDetailScreen');
   };
 
@@ -17,7 +32,7 @@ const TaskList = () => {
       <TouchableOpacity
         activeOpacity={0.7}
         style={styles.item}
-        onPress={goToDetail}>
+        onPress={() => goToDetail(item.id)}>
         <View style={styles.titleView}>
           <Text style={styles.title}>{item.title}</Text>
           <TouchableOpacity activeOpacity={0.7}>
@@ -42,32 +57,68 @@ const TaskList = () => {
               source={Images.aquaClock}
               iconStyle={styles.activeClockIcon}
             />
-            <Text style={styles.timeTxt}>{item.time}</Text>
+            <Text style={styles.timeTxt}>
+              {formatTxTDate(new Date(item.date))}
+            </Text>
           </View>
           {item.status === 'onProgress' ? (
             <View style={styles.onProgressStatusView}>
-              <Text style={styles.onProgressStatusTxt}>{item.statusTxt}</Text>
+              <Text style={styles.onProgressStatusTxt}>
+                {renderStatusTxt(item.status)}
+              </Text>
             </View>
           ) : (
             <View style={styles.completedStatusView}>
-              <Text style={styles.completedStatusTxt}>{item.statusTxt}</Text>
+              <Text style={styles.completedStatusTxt}>
+                {renderStatusTxt(item.status)}
+              </Text>
             </View>
           )}
         </View>
       </TouchableOpacity>
     );
-  }, []);
+  }, [list]);
 
-  if (taskAtHome?.length > 0) {
+  if (list.length === 0) {
     return (
-      <>
-        {taskAtHome.map(item => (
-          <RenderItemTask key={item.id} item={item} />
-        ))}
-      </>
+      <View style={styles.emptyList}>
+        <Text style={styles.noDataTxt}>No Data Display</Text>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => navigate('AddCategory')}>
+          <Text style={styles.createTxt}>Create New Task</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
-  return null;
+  let newList = [];
+  if (indexTab === 0) {
+    newList = list.filter(
+      (i: TaskItem) => getDistanceBetweenTwoDate(i.date, today) === 1,
+    );
+  }
+  if (indexTab === 1) {
+    newList = list.filter(
+      (i: TaskItem) => getDistanceBetweenTwoDate(i.date, today) === 2,
+    );
+  }
+  if (indexTab === 2) {
+    newList = list.filter(
+      (i: TaskItem) => getDistanceBetweenTwoDate(i.date, today) === 3,
+    );
+  }
+  if (indexTab === 3) {
+    newList = list.filter(
+      (i: TaskItem) => i.status === 'completed',
+    );
+  }
+  return (
+    <>
+      {newList.map((item: TaskItem) => (
+        <RenderItemTask key={item.id} item={item} />
+      ))}
+    </>
+  );
 };
 
 export default TaskList;

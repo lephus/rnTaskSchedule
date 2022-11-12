@@ -11,6 +11,9 @@ import {Text, View, Animated, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import Constants from 'common/Constants';
 
+interface IProps {
+  setIndexTab: (value: number) => void;
+}
 interface itemType {
   id: string;
   label: string;
@@ -24,7 +27,7 @@ interface TabType {
 
 const {width} = Constants.Window;
 
-const TabView = ({setIndexTab}) => {
+const TabView = ({setIndexTab}: IProps) => {
   const ref = useRef<any>();
   const scrollX = useRef(new Animated.Value(0)).current;
   const [localIndex, setLocalIndex] = useState(0);
@@ -52,16 +55,16 @@ const TabView = ({setIndexTab}) => {
     init();
   }, []);
 
-  const Tabs = ({data, scrollX, onItemPress}) => {
+  const Tabs = ({data, scrollX, onItemPress}: any) => {
     const containerRef = useRef<any>();
     const [measures, setMeasures] = useState([]);
 
     useEffect(() => {
       let m: any = [];
-      data.forEach(item => {
+      data.forEach((item: any) => {
         item.ref.current.measureLayout(
           containerRef.current,
-          (x, y, width, height) => {
+          (x: any, y: any, width: any, height: any) => {
             m.push({x, y, width, height});
 
             if (m.length === data.length) {
@@ -75,7 +78,7 @@ const TabView = ({setIndexTab}) => {
     return (
       <View style={{height: 30, width: width - 20, marginHorizontal: 10}}>
         <View style={styles.tabs} ref={containerRef}>
-          {data.map((item, index) => (
+          {data.map((item: any, index: number) => (
             <Tab
               key={item.id}
               item={item}
@@ -117,11 +120,11 @@ const TabView = ({setIndexTab}) => {
     );
   });
 
-  const Indicator = ({measures, scrollX}) => {
+  const Indicator = ({measures, scrollX}: any) => {
     const inputRange = ListTabVIew.map((_, i) => i * width);
     const translateX = scrollX.interpolate({
       inputRange,
-      outputRange: measures.map(measure => measure.x),
+      outputRange: measures.map((measure: any) => measure.x),
     });
 
     return (
@@ -136,7 +139,7 @@ const TabView = ({setIndexTab}) => {
     );
   };
 
-  const renderItemBorderBottom = ({item}) => {
+  const renderItemBorderBottom = () => {
     return <View style={{height: 0, width: width}} />;
   };
 

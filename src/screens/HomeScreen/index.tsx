@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 
 import styles from './styles';
 import ImageLoading from 'components/ImageLoading';
@@ -14,21 +15,50 @@ import Images from 'common/Images';
 import TabView from 'container/Home/TabView';
 import CategoriesList from 'container/Home/CategoriesList';
 import TaskList from 'container/Home/TaskList';
+import {selectUser, selectTask} from 'slices';
+import {getDistanceBetweenTwoDate} from 'utils/DateHelpers';
+import {TaskItem} from 'interface';
 
 const HomeScreen = () => {
-  const [indexTab, setIndexTab] = useState(0);
+  const dispatch = useDispatch();
+  const userReducer = useSelector(selectUser);
+  const taskReducer = useSelector(selectTask);
 
+  const today = new Date();
+  const {list} = taskReducer;
+  const [indexTab, setIndexTab] = useState(0);
+  // indexTab is 1 - today, 2 - Upcoming, 3 - Late, 4 - Completed
+
+  // useEffect(() => {
+  //   dispatch(remove());
+  // }, []);
+
+  const totalTaskToday = list.filter(
+    (i: TaskItem) =>
+      getDistanceBetweenTwoDate(i.date, today) === 1 &&
+      i.status === 'onProgress',
+  );
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.infoUser}>
-        <ImageLoading
-          resizeMode="cover"
-          source={Images.defaultAvatar}
-          iconStyle={styles.imgUser}
-        />
+        {userReducer?.avatar ? (
+          <ImageLoading
+            resizeMode="cover"
+            source={{uri: userReducer.avatar}}
+            iconStyle={styles.imgUser}
+          />
+        ) : (
+          <ImageLoading
+            resizeMode="cover"
+            source={Images.defaultAvatar}
+            iconStyle={styles.imgUser}
+          />
+        )}
         <View style={styles.infoUserView}>
-          <Text style={styles.nameUserTxt}>Jhon Doe</Text>
-          <Text style={styles.numOfTaskUserTxt}>40 tasks today</Text>
+          <Text style={styles.nameUserTxt}>{userReducer.userName}</Text>
+          <Text style={styles.numOfTaskUserTxt}>
+            {totalTaskToday?.length || 0} tasks today
+          </Text>
         </View>
       </View>
 
@@ -52,7 +82,7 @@ const HomeScreen = () => {
           <Text style={styles.titleContentTxt}>My Task</Text>
         </View>
         <TabView setIndexTab={setIndexTab} />
-        <TaskList />
+        <TaskList indexTab={indexTab} />
 
         <View style={styles.emptyView} />
       </ScrollView>

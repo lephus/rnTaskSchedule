@@ -43,7 +43,6 @@ const SelectMonthYearModal = forwardRef(
         setVisible(false);
         setDate(selectedDate);
         setMonthSelected(selectedDate);
-        // console.warn('2', event, newDate);
       },
       [date, showPicker],
     );

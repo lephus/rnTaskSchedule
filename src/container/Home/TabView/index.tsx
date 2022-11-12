@@ -17,21 +17,21 @@ interface TabType {
     id: string;
     label: string;
     ref: any;
-  },
+  };
   onItemPress: () => void;
   index: number;
 }
 
-const TabView = ({setIndexTab}) => {
+const TabView = ({setIndexTab}: any) => {
   const ref = useRef<any>();
   const scrollX = useRef(new Animated.Value(0)).current;
-  const [localIndex, setLocalIndex] = useState<number>(1);
+  const [localIndex, setLocalIndex] = useState<number>(0);
 
   const ListTabVIew = [
-    {id: '1', label: 'Today', ref: createRef()},
-    {id: '2', label: 'Upcoming', ref: createRef()},
-    {id: '3', label: 'Late', ref: createRef()},
-    {id: '4', label: 'Completed', ref: createRef()},
+    {id: 0, label: 'Today', ref: createRef()},
+    {id: 1, label: 'Upcoming', ref: createRef()},
+    {id: 2, label: 'Late', ref: createRef()},
+    {id: 3, label: 'Completed', ref: createRef()},
   ];
 
   const onItemPress = (itemIndex: number) => {
@@ -52,12 +52,12 @@ const TabView = ({setIndexTab}) => {
     init();
   }, []);
 
-  const Tabs = ({data, scrollX, onItemPress}) => {
+  const Tabs = ({data, scrollX, onItemPress}: any) => {
     const containerRef = useRef<any>();
 
     return (
       <View style={styles.tabs} ref={containerRef}>
-        {data.map((item, index) => (
+        {data.map((item: any, index: number) => (
           <Tab
             key={item.id}
             item={item}

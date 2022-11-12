@@ -20,6 +20,8 @@
       "@screens/*": ["src/screens/*"],
       "@utils/*": ["src/utils/*"],
       "@navigation/*": ["src/navigation/*"],
+      "@slices/*": ["src/slices/*"],
+      "@interface/*": ["src/interface/*"],
     },
   },
   "exclude": [

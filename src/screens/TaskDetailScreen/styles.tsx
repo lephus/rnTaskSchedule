@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   onProgressStatusTxt: {
     fontWeight: '500',
-    fontSize: scaleFont(12),
+    fontSize: scaleFont(14),
     color: Colors.Color_039855,
   },
   completedStatusView: {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   completedStatusTxt: {
     fontWeight: '500',
-    fontSize: scaleFont(12),
+    fontSize: scaleFont(14),
   },
 
   item: {
