@@ -17,8 +17,13 @@ export const categorySlice = createSlice({
     // decrement: state => {
     //   state.value -= 1;
     // },
-    remove: (state: any, action) => {
+    removeAllCategory: (state: any) => {
       state.list = [];
+    },
+    removeCategoryItem: (state, action) => {
+      const list = [...current(state).list];
+      const newList = list.filter((i: any) => i.id !== action.payload);
+      state.list = newList;
     },
     addCategoryItem: (state: any, action) => {
       const newItem: any = action.payload;
@@ -44,8 +49,13 @@ export const categorySlice = createSlice({
   },
 });
 
-export const {addCategoryItem, getCategoryDetail, updateCategoryItem, remove} =
-  categorySlice.actions;
+export const {
+  addCategoryItem,
+  getCategoryDetail,
+  updateCategoryItem,
+  removeAllCategory,
+  removeCategoryItem,
+} = categorySlice.actions;
 export const selectCategory = (state: any) => state.category;
 
 export default categorySlice.reducer;

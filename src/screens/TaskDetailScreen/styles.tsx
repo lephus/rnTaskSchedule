@@ -78,6 +78,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: scaleFont(14),
   },
+  errorView: {
+    backgroundColor: Colors.Color_F3DADA,
+  },
+  errorTxt: {
+    color: Colors.Color_980C03,
+  },
 
   item: {
     backgroundColor: Colors.Color_F9F9FB,

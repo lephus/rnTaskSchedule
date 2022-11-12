@@ -50,6 +50,10 @@ const styles = StyleSheet.create({
     fontSize: scaleFont(12),
     marginLeft: scaleSize(7),
   },
+  footerAction: {
+    marginHorizontal: scaleSize(15),
+    marginBottom: scaleSize(10),
+  },
   onProgressStatusView: {
     borderRadius: scaleSize(20),
     paddingVertical: scaleSize(9),
@@ -60,6 +64,25 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: scaleFont(12),
     color: Colors.Color_039855,
+  },
+  completedStatusView: {
+    borderRadius: scaleSize(20),
+    paddingVertical: scaleSize(10),
+    paddingHorizontal: scaleSize(15),
+    backgroundColor: Colors.Color_DCDFEA,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: scaleSize(10),
+  },
+  completedStatusTxt: {
+    fontWeight: '500',
+    fontSize: scaleFont(14),
+  },
+  errorView: {
+    backgroundColor: Colors.Color_F3DADA,
+  },
+  errorTxt: {
+    color: Colors.Color_980C03,
   },
 
   item: {

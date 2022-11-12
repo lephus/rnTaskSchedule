@@ -15,6 +15,7 @@ interface IProps {
   txtError: string;
   onFocus?: () => void;
   placeholder?: string;
+  keyboardType?: any;
 }
 
 const InputCustom = ({
@@ -28,6 +29,7 @@ const InputCustom = ({
   txtError,
   onFocus,
   placeholder,
+  keyboardType,
 }: IProps) => {
   if (showIcon) {
     return (
@@ -38,6 +40,7 @@ const InputCustom = ({
             style={[styles.input, inputStyle]}
             value={value}
             placeholder={placeholder}
+            keyboardType={keyboardType}
             onChangeText={onChangeText}
             onFocus={onFocus}
           />
@@ -53,6 +56,7 @@ const InputCustom = ({
           style={[styles.input, inputStyle]}
           value={value}
           placeholder={placeholder}
+          keyboardType={keyboardType || undefined}
           onChangeText={onChangeText}
           onFocus={onFocus}
         />
