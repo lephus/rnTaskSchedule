@@ -139,4 +139,6 @@ export default {
   Color_F5F5F5: '#F5F5F5',
   Color_EAECF05: '#EAECF0',
   Color_111322: '#111322',
+  Color_2D3748: '#2D3748',
+  Color_B9C0D4: '#B9C0D4',
 }

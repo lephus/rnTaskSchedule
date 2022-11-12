@@ -7,7 +7,7 @@ import CreateTaskTab from 'container/CreateContent/TabView/CreateTaskTab';
 import CreateCategoryTab from 'container/CreateContent/TabView/CreateCategoryTab';
 
 const CreateContentScreen = () => {
-  const [indexTab, setIndexTab] = useState(1);
+  const [indexTab, setIndexTab] = useState(0);
 
   const renderTabContent = () => {
     if (indexTab === 0) {

@@ -4,53 +4,189 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from 'react-native';
-import React, {useCallback} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
+import DatePicker from 'react-native-date-picker';
+import {useDispatch} from 'react-redux';
+import uuid from 'react-native-uuid';
+import {showMessage} from 'react-native-flash-message';
 
 import styles from './styles';
-import HeaderAction from 'components/HeaderAction';
+import InputCustom from 'components/InputCustom';
 import ImageLoading from 'components/ImageLoading';
+import HideKeyboard from 'components/HideKeyboard';
 import Images from 'common/Images';
+import {formatTxTDate} from 'utils/TransformData';
+import AddNewTask from 'container/CreateContent/TabView/AddNewTask';
+import {addCategoryItem} from 'slices';
+import {TaskItemOfCategory} from 'interface';
 
 const CreateCategoryTab = () => {
+  const dispatch = useDispatch();
+  const addNewRef = useRef<any>(null);
+
+  const today = new Date();
+  const [title, setTitle] = useState('');
+  const [titleError, setTitleError] = useState('');
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState(today);
+  const [dateTxt, setDateTxt] = useState('');
+  const [open, setOpen] = useState(false);
+  const [taskList, setTaskList] = useState<Array<TaskItemOfCategory>>([]);
+
+  useEffect(() => {
+    const res = formatTxTDate(date);
+    setDateTxt(res);
+  }, []);
+
+  const onConfirmDate = (date: Date) => {
+    const res = formatTxTDate(date);
+    setOpen(false);
+    setDate(date);
+    setDateTxt(res);
+  };
+
+  const onOpenAddNewModal = () => {
+    addNewRef?.current?.setError('');
+    addNewRef?.current?.setValue('');
+    addNewRef?.current?.setVisible(true);
+  };
+
+  const addTaskToList = (value: string) => {
+    if (taskList.length > 0) {
+      const lastElement: any = taskList.at(-1);
+      setTaskList([
+        ...taskList,
+        {
+          id: lastElement.id + 1,
+          taskName: value,
+          checked: false,
+        },
+      ]);
+    } else {
+      setTaskList([
+        {
+          id: 1,
+          taskName: value,
+          checked: false,
+        },
+      ]);
+    }
+    addNewRef?.current?.setVisible(false);
+  };
+
+  const onAddNewCategory = () => {
+    try {
+      if (title.length > 0) {
+        showMessage({
+          message: 'Create category success',
+          type: 'success',
+          duration: 1500,
+        });
+        const res = formatTxTDate(today);
+        dispatch(
+          addCategoryItem({
+            id: uuid.v4(),
+            title,
+            dueDate: date,
+            description,
+            taskList,
+            createAt: today,
+          }),
+        );
+        setTitle('');
+        setDate(today);
+        setDescription('');
+        setDateTxt(res);
+        setTaskList([]);
+      } else {
+        setTitleError('Please enter a title');
+      }
+    } catch (error) {
+      showMessage({
+        message: 'Create category failure. Please try again',
+        type: 'danger',
+        duration: 1500,
+      });
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
-        <Text style={styles.titleTypeTxt}>Task Title</Text>
-        <Text style={styles.nameTxt}>NFT Web App Prototype</Text>
-
-        <Text style={styles.titleTypeTxt}>Due Date</Text>
-        <View style={styles.time}>
-          <ImageLoading
-            source={Images.aquaClock}
-            iconStyle={styles.activeClockIcon}
+    <HideKeyboard>
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.content}>
+          <Text style={styles.titleTypeTxt}>Task Title</Text>
+          <InputCustom
+            inputStyle={styles.btnView}
+            value={title}
+            txtError={titleError}
+            placeholder="input title"
+            onChangeText={setTitle}
           />
-          <Text style={styles.timeTxt}>08:30 AM, 22 May 2022</Text>
+
+          <Text style={styles.titleTypeTxt}>Due Date</Text>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.time}
+            onPress={() => setOpen(true)}>
+            <ImageLoading
+              source={Images.aquaClock}
+              iconStyle={styles.activeClockIcon}
+            />
+            <Text style={styles.timeTxt}>{dateTxt}</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.titleTypeTxt}>Description</Text>
+          <TextInput
+            placeholder="input description"
+            multiline
+            style={styles.descriptionInput}
+            value={description}
+            onChangeText={txt => setDescription(txt)}
+          />
+
+          <Text style={styles.titleTypeTxt}>Stages of Task</Text>
+          {taskList.length > 0 &&
+            taskList.map(item => (
+              <View style={styles.item} key={item.id}>
+                <Text style={styles.nameItem}>{item.taskName}</Text>
+              </View>
+            ))}
+          <TouchableOpacity
+            style={styles.addNameBtn}
+            activeOpacity={0.7}
+            onPress={onOpenAddNewModal}>
+            <Text style={styles.addName}>Add New</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        <View style={styles.footer}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.onProgressStatusView}
+            onPress={onAddNewCategory}>
+            <Text style={styles.onProgressStatusTxt}>Save</Text>
+          </TouchableOpacity>
         </View>
 
-        <Text style={styles.titleTypeTxt}>Description</Text>
-        <Text style={styles.descriptionTxt}>
-          Last year was a fantastic year for NFTs, with the market reaching a
-          $40 billion valuation for the first time. In addition, more than $10
-          billion worth of NFTs are now sold every week – with NFT..
-        </Text>
+        <DatePicker
+          modal
+          locale="en"
+          open={open}
+          date={date}
+          minimumDate={today}
+          onConfirm={date => onConfirmDate(date)}
+          onCancel={() => {
+            setOpen(false);
+          }}
+        />
 
-        <Text style={styles.titleTypeTxt}>Stages of Task</Text>
-        <View style={styles.item}>
-          <Text style={styles.nameItem}>User Research & Analysis</Text>
-        </View>
-      </ScrollView>
-
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.onProgressStatusView}>
-          <Text style={styles.onProgressStatusTxt}>Save</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+        <AddNewTask ref={addNewRef} addTaskToList={addTaskToList} />
+      </SafeAreaView>
+    </HideKeyboard>
   );
 };
 

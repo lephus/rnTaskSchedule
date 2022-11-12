@@ -8,14 +8,18 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import MonthPicker from 'react-native-month-year-picker';
+import {useSelector, useDispatch} from 'react-redux';
 
 import styles from './styles';
-import HeaderAction from 'components/HeaderAction';
+
 import ImageLoading from 'components/ImageLoading';
 import SelectMonthYearModal from 'components/SelectMonthYearModal';
 import Images from 'common/Images';
-import Constants from 'common/Constants';
-import {getDayByMonth} from 'utils/TransformData';
+import Constants, {monthNames} from 'common/Constants';
+import {getDayByMonth, formatTxTDateTime} from 'utils/TransformData';
+import {getDistanceWithToday, getExpireTaskByDate} from 'utils/DateHelpers';
+import {selectTask} from 'slices';
+import {TaskItem} from 'interface';
 import {TaskByDay} from '../../fakeData/Calendar';
 
 interface ItemType {
@@ -33,22 +37,13 @@ interface DayItemType {
 }
 
 const today = new Date();
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
 
 const CalendarScreen = () => {
+  const taskReducer = useSelector(selectTask);
+
+  const today = new Date();
+  const {list} = taskReducer;
+
   const refModal = useRef<any>(null);
 
   const [daysList, setDaysList] = useState<Array<DayItemType>>([]);
@@ -59,6 +54,7 @@ const CalendarScreen = () => {
   });
   const [monthSelected, setMonthSelected] = useState(today);
   const [firstRun, setFirstRun] = useState(false);
+  const [tasks, setTasks] = useState([]);
 
   // for IOS
   const [visible, setVisible] = useState(false);
@@ -98,6 +94,17 @@ const CalendarScreen = () => {
       setDaysList(result);
       setFirstRun(true);
     }
+    const totalTaskByDay = list.filter(
+      (i: TaskItem) =>
+        getDistanceWithToday(
+          i.date,
+          monthSelected,
+          monthSelected.getFullYear(),
+          monthSelected.getMonth(),
+          monthSelected.getDate(),
+        ) === 1,
+    );
+    setTasks(totalTaskByDay);
   }, []);
 
   useEffect(() => {
@@ -132,25 +139,59 @@ const CalendarScreen = () => {
         result[i].isToday = false;
       }
     }
+    const totalTaskByDay = list.filter(
+      (i: TaskItem) =>
+        getDistanceWithToday(
+          i.date,
+          monthSelected,
+          monthSelected.getFullYear(),
+          monthSelected.getMonth(),
+          day,
+        ) === 1,
+    );
+    setTasks(totalTaskByDay);
     setDaysList(result);
   };
 
-  const renderTaskItem: ListRenderItem<ItemType> = useCallback(({item}) => {
-    return (
-      <View style={styles.item}>
-        <View style={styles.leftItem}>
-          <Text style={styles.startTime}>{item.starTime[0]}</Text>
-          <Text style={styles.startTimeType}>{item.starTime[1]}</Text>
-        </View>
+  const renderTaskItem: ListRenderItem<TaskItem> = useCallback(
+    ({item}) => {
+      const bgColor =
+        getExpireTaskByDate(item.date, today) === 3
+          ? '#FDEAEB'
+          : 'rgba(182, 146, 246, 0.15)';
+      const startTime = formatTxTDateTime(new Date(item.createAt));
+      const endTime = formatTxTDateTime(new Date(item.date));
+      return (
+        <View style={styles.item}>
+          <View style={styles.leftItem}>
+            <Text style={styles.startTime}>
+              {startTime.length === 4 && `${startTime[0]}:${startTime[1]}`}
+            </Text>
+            <Text style={styles.startTimeType}>
+              {startTime.length === 4 && startTime[2]}
+            </Text>
+          </View>
 
-        <View style={[styles.rightItem, {backgroundColor: item.color}]}>
-          <Text style={styles.titleItem}>{item.title}</Text>
-          <Text style={styles.descriptionItem}>{item.description}</Text>
-          <Text style={styles.time}>{item.time}</Text>
+          <View
+            style={[
+              styles.rightItem,
+              {
+                backgroundColor:
+                  item.status === 'completed' ? '#E8F5F3' : bgColor,
+              },
+            ]}>
+            <Text style={styles.titleItem}>{item.title}</Text>
+            <Text style={styles.descriptionItem}>{item.description}</Text>
+            <Text style={styles.time}>
+              {startTime.length === 4 && startTime[3]} -{' '}
+              {endTime.length === 4 && endTime[3]}
+            </Text>
+          </View>
         </View>
-      </View>
-    );
-  }, []);
+      );
+    },
+    [list],
+  );
 
   const renderDayItem: ListRenderItem<any> = ({item}) => {
     if (item.isToday) {
@@ -207,8 +248,8 @@ const CalendarScreen = () => {
         Tasks of {currentDay.day} {currentDay.month}
       </Text>
       <FlatList
-        data={TaskByDay}
-        keyExtractor={(item: ItemType) => `${item.id}`}
+        data={tasks}
+        keyExtractor={(item: TaskItem) => `${item.id}`}
         style={styles.taskList}
         renderItem={renderTaskItem}
         ItemSeparatorComponent={() => <View style={styles.separatorItem} />}

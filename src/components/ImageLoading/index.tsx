@@ -57,11 +57,11 @@ const ImageLoading = ({resizeMode, iconStyle, url, source}: IProps) => {
   const renderLoading = () => {
     return (
       <View style={styles.viewLoading}>
-        <ActivityIndicator
+        {/* <ActivityIndicator
           size="large"
           // color={colors.purple5C3595}
           style={styles.loading}
-        />
+        /> */}
       </View>
     );
   };

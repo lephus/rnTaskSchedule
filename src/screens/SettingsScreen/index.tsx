@@ -1,23 +1,33 @@
-import {
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native';
 import React, {useCallback} from 'react';
+import {useSelector} from 'react-redux';
 
 import styles from './styles';
 import ButtonCustom from 'components/ButtonCustom';
 import ImageLoading from 'components/ImageLoading';
 import Images from 'common/Images';
+import {selectUser} from 'slices';
 
 const SettingsScreen = () => {
+  const userReducer = useSelector(selectUser);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.avatarHeader}>
-          <ImageLoading iconStyle={styles.avatar} source={Images.defaultAvatar} />
+          {userReducer?.avatar ? (
+            <ImageLoading
+              resizeMode="cover"
+              source={{uri: userReducer.avatar}}
+              iconStyle={styles.avatar}
+            />
+          ) : (
+            <ImageLoading
+              resizeMode="cover"
+              source={Images.defaultAvatar}
+              iconStyle={styles.avatar}
+            />
+          )}
           <TouchableOpacity activeOpacity={0.7} style={styles.cameraBtn}>
             <ImageLoading
               iconStyle={styles.cameraIc}
@@ -31,7 +41,7 @@ const SettingsScreen = () => {
       <View style={styles.content}>
         <ButtonCustom
           showIcon
-          txt="Jhon Done"
+          txt={userReducer.userName}
           sourceIcon={Images.grayUser}
           iconStyle={styles.iconStyle}
           btnStyles={[styles.btnView, styles.icNormalView]}

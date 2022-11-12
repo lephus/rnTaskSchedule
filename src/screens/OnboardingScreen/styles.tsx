@@ -64,9 +64,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  icNormalTxt: {
-    color: Colors.black,
-  },
   iconStyle: {
     width: scaleSize(20),
     height: scaleSize(20),

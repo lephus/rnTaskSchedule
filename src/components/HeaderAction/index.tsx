@@ -38,7 +38,7 @@ const HeaderAction = ({
       )}
 
       <View style={styles.centerContainer}>
-        {title?.length > 0 && (
+        {title && title.length > 0 && (
           <Text style={[styles.textTitle, textTitleProps && textTitleProps]}>
             {title}
           </Text>
@@ -46,7 +46,7 @@ const HeaderAction = ({
       </View>
 
       <View style={styles.rightContainer}>
-        {rightActionTxt?.length > 0 && (
+        {rightActionTxt && rightActionTxt.length > 0 && (
           <TouchableOpacity
             onPress={onPressText}
             style={rightActionBtnStyle}

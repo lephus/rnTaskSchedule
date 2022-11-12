@@ -107,6 +107,37 @@ const styles = StyleSheet.create({
     fontSize: scaleFont(12),
     color: Colors.Color_4A5578,
   },
+
+  emptyList: {
+    height: Constants.isIOS ? scaleSize(185) : scaleSize(170),
+    paddingVertical: scaleSize(20),
+    paddingHorizontal: scaleSize(15),
+    margin: scaleSize(15),
+    marginBottom: scaleSize(20),
+    borderRadius: scaleSize(24),
+    shadowColor: 'rgba(16, 24, 40, 0.3)',
+    shadowOffset: {
+      width: scaleSize(1),
+      height: scaleSize(1),
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: scaleSize(2),
+    elevation: scaleSize(5),
+    backgroundColor: Colors.white,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  noDataTxt: {
+    fontWeight: '600',
+    fontSize: scaleFont(18),
+    color: Colors.Color_DCDFEA,
+  },
+  createTxt: {
+    fontWeight: '600',
+    fontSize: scaleFont(18),
+    marginTop: scaleSize(20),
+    color: Colors.Color_2D3748,
+  },
 });
 
 export default styles;
