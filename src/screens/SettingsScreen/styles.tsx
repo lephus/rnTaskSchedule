@@ -82,12 +82,6 @@ const styles = StyleSheet.create({
   successTxt: {
     color: Colors.Color_039855,
   },
-  errorView: {
-    backgroundColor: Colors.Color_F3DADA,
-  },
-  errorTxt: {
-    color: Colors.Color_980C03,
-  },
   normalView: {
     backgroundColor: Colors.Color_F5F5F5,
   },

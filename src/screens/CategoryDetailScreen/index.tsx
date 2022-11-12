@@ -7,15 +7,15 @@ import {
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
+import {showMessage} from 'react-native-flash-message';
 
 import styles from './styles';
 import HeaderAction from 'components/HeaderAction';
 import ImageLoading from 'components/ImageLoading';
 import Images from 'common/Images';
 import {goBack} from 'navigation/RootNavigation';
-import {selectCategory, updateCategoryItem} from 'slices';
+import {selectCategory, updateCategoryItem, removeCategoryItem} from 'slices';
 import {formatTxTDate} from 'utils/TransformData';
-import {StagesOfTask} from '../../fakeData/Detail';
 
 const CategoryDetailScreen = () => {
   const dispatch = useDispatch();
@@ -26,25 +26,22 @@ const CategoryDetailScreen = () => {
     categoryDetail?.taskList || [],
   );
 
-  const activeTask = (id: number) => {
-    const temp = [...newTaskList];
-    const indexI = temp.findIndex((i: any) => i.id === id);
-    if (indexI !== -1) {
-      temp[indexI] = {
-        ...temp[indexI],
-        checked: !temp[indexI].checked,
-      };
-    }
-    setNewTaskList(temp);
-  };
+  // const activeTask = (id: number) => {
+  //   const temp = [...newTaskList];
+  //   const indexI = temp.findIndex((i: any) => i.id === id);
+  //   if (indexI !== -1) {
+  //     temp[indexI] = {
+  //       ...temp[indexI],
+  //       checked: !temp[indexI].checked,
+  //     };
+  //   }
+  //   setNewTaskList(temp);
+  // };
 
   const renderItem = useCallback(
     ({item}: any) => {
       return (
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.item}
-          onPress={() => activeTask(item.id)}>
+        <View style={styles.item}>
           {item.checked ? (
             <ImageLoading
               iconStyle={styles.icItem}
@@ -54,35 +51,80 @@ const CategoryDetailScreen = () => {
             <View style={styles.circleIcItem} />
           )}
           <Text style={styles.nameItem}>{item.taskName}</Text>
-        </TouchableOpacity>
+        </View>
       );
     },
     [newTaskList],
   );
 
-  const saveData = () => {
+  // const saveData = () => {
+  //   dispatch(
+  //     updateCategoryItem({
+  //       id: categoryDetail.id,
+  //       data: {
+  //         ...categoryDetail,
+  //         taskList: newTaskList,
+  //       },
+  //     }),
+  //   );
+  //   goBack();
+  // };
+
+  const onDelete = () => {
+    try {
+      dispatch(removeCategoryItem(categoryDetail.id));
+      goBack();
+      showMessage({
+        message: 'Delete task success',
+        type: 'success',
+        duration: 1500,
+      });
+    } catch (error) {
+      showMessage({
+        message: 'Delete task failure. Please try again',
+        type: 'danger',
+        duration: 1500,
+      });
+    }
+  };
+
+  const onCompleted = () => {
+    const temp = [...newTaskList];
+    const newTasks = [];
+    for (let i = 0; i < temp.length; i++) {
+      newTasks.push({
+        ...temp[i],
+        checked: true,
+      });
+    }
     dispatch(
       updateCategoryItem({
         id: categoryDetail.id,
         data: {
           ...categoryDetail,
-          taskList: newTaskList,
+          taskList: newTasks,
         },
       }),
     );
-    goBack();
+    showMessage({
+      message: 'Change status category success',
+      type: 'success',
+      duration: 1500,
+    });
+    setNewTaskList(newTasks);
   };
+  const showOnProgress = newTaskList.every((i: any) => i.checked === true);
 
   return (
     <SafeAreaView style={styles.container}>
       <HeaderAction
         title="Categories Details"
-        titleActionRight="Save"
-        rightActionTxt="Save"
+        // titleActionRight="Save"
+        // rightActionTxt="Save"
         rightActionBtnStyle={styles.saveBtn}
         rightActionTxtStyle={styles.saveTxt}
         goBack={() => goBack()}
-        onPressText={saveData}
+        // onPressText={saveData}
       />
 
       <FlatList
@@ -105,9 +147,11 @@ const CategoryDetailScreen = () => {
                   {formatTxTDate(new Date(categoryDetail.dueDate))}
                 </Text>
               </View>
-              <View style={styles.onProgressStatusView}>
-                <Text style={styles.onProgressStatusTxt}>On Progress</Text>
-              </View>
+              {!showOnProgress && (
+                <View style={styles.onProgressStatusView}>
+                  <Text style={styles.onProgressStatusTxt}>On Progress</Text>
+                </View>
+              )}
             </View>
             <Text style={styles.titleTypeTxt}>Description</Text>
             <Text style={styles.descriptionTxt}>
@@ -117,6 +161,24 @@ const CategoryDetailScreen = () => {
           </>
         )}
       />
+
+      <View style={styles.footerAction}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={[styles.completedStatusView]}
+          onPress={onCompleted}>
+          <Text style={[styles.completedStatusTxt]}>Completed</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={[styles.completedStatusView, styles.errorView]}
+          onPress={onDelete}>
+          <Text style={[styles.completedStatusTxt, styles.errorTxt]}>
+            Delete
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

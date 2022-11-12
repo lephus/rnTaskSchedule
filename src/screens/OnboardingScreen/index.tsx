@@ -32,6 +32,7 @@ const OnboardingScreen = () => {
           setUserInfo({
             userName: name,
             avatar: image.uri,
+            joinAt: new Date(),
           }),
         );
       } else {
@@ -39,6 +40,7 @@ const OnboardingScreen = () => {
           setUserInfo({
             userName: name,
             avatar: '',
+            joinAt: new Date(),
           }),
         );
       }
@@ -58,7 +60,10 @@ const OnboardingScreen = () => {
 
         <View style={styles.content}>
           <View style={styles.header}>
-            <View style={styles.avatarHeader}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.avatarHeader}
+              onPress={selectAvatar}>
               {image?.uri ? (
                 <ImageLoading
                   resizeMode="cover"
@@ -71,16 +76,13 @@ const OnboardingScreen = () => {
                   source={Images.defaultAvatar}
                 />
               )}
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.cameraBtn}
-                onPress={selectAvatar}>
+              <View style={styles.cameraBtn}>
                 <ImageLoading
                   iconStyle={styles.cameraIc}
                   source={Images.grayCamera}
                 />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
           </View>
           <InputCustom
             showIcon

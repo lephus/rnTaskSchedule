@@ -29,10 +29,6 @@ const HomeScreen = () => {
   const [indexTab, setIndexTab] = useState(0);
   // indexTab is 1 - today, 2 - Upcoming, 3 - Late, 4 - Completed
 
-  // useEffect(() => {
-  //   dispatch(remove());
-  // }, []);
-
   const totalTaskToday = list.filter(
     (i: TaskItem) =>
       getDistanceBetweenTwoDate(i.date, today) === 1 &&

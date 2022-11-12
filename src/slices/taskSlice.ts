@@ -21,6 +21,14 @@ export const taskSlice = createSlice({
     incrementByAmount: (state, action) => {
       state.value += action.payload;
     },
+    removeAllTask: (state: any) => {
+      state.list = [];
+    },
+    removeTaskItem: (state, action) => {
+      const list = [...current(state).list];
+      const newList = list.filter((i: any) => i.id !== action.payload);
+      state.list = newList;
+    },
     addTaskItem: (state: any, action) => {
       const newItem: any = action.payload;
       state.list.push(newItem);
@@ -52,6 +60,8 @@ export const {
   addTaskItem,
   getTaskDetail,
   updateTaskItem,
+  removeAllTask,
+  removeTaskItem,
 } = taskSlice.actions;
 export const selectTask = (state: any) => state.task;
 

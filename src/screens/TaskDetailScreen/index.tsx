@@ -7,13 +7,14 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
+import {showMessage} from 'react-native-flash-message';
 
 import styles from './styles';
 import HeaderAction from 'components/HeaderAction';
 import ImageLoading from 'components/ImageLoading';
 import Images from 'common/Images';
 import {goBack} from 'navigation/RootNavigation';
-import {selectTask, updateTaskItem} from 'slices';
+import {selectTask, updateTaskItem, removeTaskItem} from 'slices';
 import {formatTxTDate} from 'utils/TransformData';
 
 const TaskDetailScreen = () => {
@@ -32,6 +33,24 @@ const TaskDetailScreen = () => {
       }),
     );
     goBack();
+  };
+
+  const onDelete = () => {
+    try {
+      dispatch(removeTaskItem(taskDetail.id));
+      goBack();
+      showMessage({
+        message: 'Delete task success',
+        type: 'success',
+        duration: 1500,
+      });
+    } catch (error) {
+      showMessage({
+        message: 'Delete task failure. Please try again',
+        type: 'danger',
+        duration: 1500,
+      });
+    }
   };
 
   return (
@@ -66,6 +85,14 @@ const TaskDetailScreen = () => {
           activeOpacity={0.7}
           style={styles.onProgressStatusView}>
           <Text style={styles.onProgressStatusTxt}>On Progress</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={[styles.completedStatusView, styles.errorView]}
+          onPress={onDelete}>
+          <Text style={[styles.completedStatusTxt, styles.errorTxt]}>
+            Delete
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.7}
