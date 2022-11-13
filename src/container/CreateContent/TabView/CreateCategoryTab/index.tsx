@@ -54,8 +54,9 @@ const CreateCategoryTab = () => {
   };
 
   const addTaskToList = (value: string) => {
-    if (taskList.length > 0) {
-      const lastElement: any = taskList.at(-1);
+    const lengthTasks = taskList?.length || 0;
+    if (lengthTasks > 0) {
+      const lastElement: any = taskList[lengthTasks - 1];
       setTaskList([
         ...taskList,
         {
@@ -113,80 +114,80 @@ const CreateCategoryTab = () => {
   };
 
   return (
-    <HideKeyboard>
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}>
-          <Text style={styles.titleTypeTxt}>Task Title</Text>
-          <InputCustom
-            inputStyle={styles.btnView}
-            value={title}
-            txtError={titleError}
-            placeholder="input title"
-            onChangeText={setTitle}
-          />
-
-          <Text style={styles.titleTypeTxt}>Due Date</Text>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.time}
-            onPress={() => setOpen(true)}>
-            <ImageLoading
-              source={Images.aquaClock}
-              iconStyle={styles.activeClockIcon}
-            />
-            <Text style={styles.timeTxt}>{dateTxt}</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.titleTypeTxt}>Description</Text>
-          <TextInput
-            placeholder="input description"
-            multiline
-            style={styles.descriptionInput}
-            value={description}
-            onChangeText={txt => setDescription(txt)}
-          />
-
-          <Text style={styles.titleTypeTxt}>Stages of Task</Text>
-          {taskList.length > 0 &&
-            taskList.map(item => (
-              <View style={styles.item} key={item.id}>
-                <Text style={styles.nameItem}>{item.taskName}</Text>
-              </View>
-            ))}
-          <TouchableOpacity
-            style={styles.addNameBtn}
-            activeOpacity={0.7}
-            onPress={onOpenAddNewModal}>
-            <Text style={styles.addName}>Add New</Text>
-          </TouchableOpacity>
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.onProgressStatusView}
-            onPress={onAddNewCategory}>
-            <Text style={styles.onProgressStatusTxt}>Save</Text>
-          </TouchableOpacity>
-        </View>
-
-        <DatePicker
-          modal
-          locale="en"
-          open={open}
-          date={date}
-          minimumDate={today}
-          onConfirm={date => onConfirmDate(date)}
-          onCancel={() => {
-            setOpen(false);
-          }}
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled">
+        <Text style={styles.titleTypeTxt}>Task Title</Text>
+        <InputCustom
+          inputStyle={styles.btnView}
+          value={title}
+          txtError={titleError}
+          placeholder="input title"
+          onChangeText={setTitle}
         />
 
-        <AddNewTask ref={addNewRef} addTaskToList={addTaskToList} />
-      </SafeAreaView>
-    </HideKeyboard>
+        <Text style={styles.titleTypeTxt}>Due Date</Text>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.time}
+          onPress={() => setOpen(true)}>
+          <ImageLoading
+            source={Images.aquaClock}
+            iconStyle={styles.activeClockIcon}
+          />
+          <Text style={styles.timeTxt}>{dateTxt}</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.titleTypeTxt}>Description</Text>
+        <TextInput
+          placeholder="input description"
+          multiline
+          style={styles.descriptionInput}
+          value={description}
+          onChangeText={txt => setDescription(txt)}
+        />
+
+        <Text style={styles.titleTypeTxt}>Stages of Task</Text>
+        {taskList.length > 0 &&
+          taskList.map(item => (
+            <View style={styles.item} key={item.id}>
+              <Text style={styles.nameItem}>{item.taskName}</Text>
+            </View>
+          ))}
+        <TouchableOpacity
+          style={styles.addNameBtn}
+          activeOpacity={0.7}
+          onPress={onOpenAddNewModal}>
+          <Text style={styles.addName}>Add New</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.onProgressStatusView}
+          onPress={onAddNewCategory}>
+          <Text style={styles.onProgressStatusTxt}>Save</Text>
+        </TouchableOpacity>
+      </View>
+
+      <DatePicker
+        modal
+        locale="en"
+        open={open}
+        date={date}
+        minimumDate={today}
+        onConfirm={date => onConfirmDate(date)}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      />
+
+      <AddNewTask ref={addNewRef} addTaskToList={addTaskToList} />
+    </SafeAreaView>
   );
 };
 

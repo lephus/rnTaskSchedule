@@ -26,22 +26,39 @@ const CategoryDetailScreen = () => {
     categoryDetail?.taskList || [],
   );
 
-  // const activeTask = (id: number) => {
-  //   const temp = [...newTaskList];
-  //   const indexI = temp.findIndex((i: any) => i.id === id);
-  //   if (indexI !== -1) {
-  //     temp[indexI] = {
-  //       ...temp[indexI],
-  //       checked: !temp[indexI].checked,
-  //     };
-  //   }
-  //   setNewTaskList(temp);
-  // };
+  const activeTask = (id: number) => {
+    const temp = [...newTaskList];
+    const indexI = temp.findIndex((i: any) => i.id === id);
+    if (indexI !== -1 && !temp[indexI].checked) {
+      temp[indexI] = {
+        ...temp[indexI],
+        checked: true,
+      };
+      dispatch(
+        updateCategoryItem({
+          id: categoryDetail.id,
+          data: {
+            ...categoryDetail,
+            taskList: temp,
+          },
+        }),
+      );
+      showMessage({
+        message: 'Update task category success',
+        type: 'success',
+        duration: 1500,
+      });
+    }
+    setNewTaskList(temp);
+  };
 
   const renderItem = useCallback(
     ({item}: any) => {
       return (
-        <View style={styles.item}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.item}
+          onPress={() => activeTask(item.id)}>
           {item.checked ? (
             <ImageLoading
               iconStyle={styles.icItem}
@@ -51,7 +68,7 @@ const CategoryDetailScreen = () => {
             <View style={styles.circleIcItem} />
           )}
           <Text style={styles.nameItem}>{item.taskName}</Text>
-        </View>
+        </TouchableOpacity>
       );
     },
     [newTaskList],

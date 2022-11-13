@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
   },
   btnView: {
     borderRadius: scaleSize(50),
-    padding: scaleSize(15),
+    paddingHorizontal: scaleSize(15),
+    paddingVertical: Constants.isIOS ? scaleSize(15) : scaleSize(7),
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: scaleSize(15),
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: Constants.isIOS ? 0 : scaleSize(20),
   },
   successTxt: {
+    paddingVertical: Constants.isIOS ? scaleSize(0) : scaleSize(5),
     color: Colors.Color_039855,
   },
 });

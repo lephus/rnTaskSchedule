@@ -10,7 +10,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
 
+  scView: {
+    flex: 1,
+  },
   content: {
+    flexGrow: 1,
     paddingHorizontal: scaleSize(15),
   },
 

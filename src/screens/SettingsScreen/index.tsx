@@ -118,8 +118,7 @@ const SettingsScreen = () => {
       );
     }
   };
-  const a = new Date();
-  // joinAt
+  const joinAtApp = new Date(joinAt);
 
   return (
     <HideKeyboard>
@@ -138,8 +137,8 @@ const SettingsScreen = () => {
             </View>
           </TouchableOpacity>
           <Text style={styles.joinAtTxt}>
-            Join at {joinAt && joinAt.getFullYear()}/
-            {joinAt && joinAt.getMonth()}/{joinAt && joinAt.getDate()}
+            Join at {joinAtApp.getFullYear()}/{joinAtApp.getMonth()}/
+            {joinAtApp.getDate()}
           </Text>
         </View>
 
