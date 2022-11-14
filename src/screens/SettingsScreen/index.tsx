@@ -15,115 +15,115 @@ import {isPhoneNumber} from 'utils/Validator';
 import {selectUser, updateUserInfo, removeAllCategory} from 'slices';
 
 const SettingsScreen = () => {
-  const dispatch = useDispatch();
-  const userReducer = useSelector(selectUser);
-  const {joinAt, userName, avatar} = userReducer;
+  // const dispatch = useDispatch();
+  // const userReducer = useSelector(selectUser);
+  // const {joinAt, userName, avatar} = userReducer;
 
   const selectModalRef = useRef<any>(null);
 
-  const [name, setName] = useState(userName);
-  const [error, setError] = useState('');
-  const [phone, setPhone] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const [image, setImage] = useState<any>({});
+  // const [name, setName] = useState(userName);
+  // const [error, setError] = useState('');
+  // const [phone, setPhone] = useState('');
+  // const [phoneError, setPhoneError] = useState('');
+  // const [image, setImage] = useState<any>({});
   const [type, setType] = useState('');
 
-  const selectAvatar = async () => {
-    const result = await launchImageLibrary({mediaType: 'photo'});
-    if (result.assets && result.assets.length > 0) {
-      setImage(result.assets[0]);
-    }
-  };
+  // const selectAvatar = async () => {
+  //   const result = await launchImageLibrary({mediaType: 'photo'});
+  //   if (result.assets && result.assets.length > 0) {
+  //     setImage(result.assets[0]);
+  //   }
+  // };
 
-  const onFocusInput = useCallback(() => {
-    setError('');
-  }, []);
+  // const onFocusInput = useCallback(() => {
+  //   setError('');
+  // }, []);
 
-  const onFocusPhoneInput = useCallback(() => {
-    setPhoneError('');
-  }, []);
+  // const onFocusPhoneInput = useCallback(() => {
+  //   setPhoneError('');
+  // }, []);
 
-  const onSaveData = () => {
-    if (name.length > 0) {
-      if (phone.length > 0) {
-        const resPhone = isPhoneNumber(phone);
-        if (resPhone) {
-          dispatch(
-            updateUserInfo({
-              userName: name,
-              avatar: image?.uri ? image.uri : avatar,
-              phone,
-            }),
-          );
-          showMessage({
-            message: 'Change Information success',
-            type: 'success',
-            duration: 1500,
-          });
-        } else {
-          setPhoneError('Phone is not correct');
-        }
-      } else {
-        dispatch(
-          updateUserInfo({
-            userName: name,
-            avatar: image?.uri ? image.uri : avatar,
-            phone: '',
-          }),
-        );
-        showMessage({
-          message: 'Change Information success',
-          type: 'success',
-          duration: 1500,
-        });
-      }
-    } else {
-      const resPhone = isPhoneNumber(phone);
-      if (!resPhone) {
-        setPhoneError('Phone is not correct');
-      }
-      setError('Please enter a name');
-    }
-  };
+  // const onSaveData = () => {
+  //   if (name.length > 0) {
+  //     if (phone.length > 0) {
+  //       const resPhone = isPhoneNumber(phone);
+  //       if (resPhone) {
+  //         dispatch(
+  //           updateUserInfo({
+  //             userName: name,
+  //             avatar: image?.uri ? image.uri : avatar,
+  //             phone,
+  //           }),
+  //         );
+  //         showMessage({
+  //           message: 'Change Information success',
+  //           type: 'success',
+  //           duration: 1500,
+  //         });
+  //       } else {
+  //         setPhoneError('Phone is not correct');
+  //       }
+  //     } else {
+  //       dispatch(
+  //         updateUserInfo({
+  //           userName: name,
+  //           avatar: image?.uri ? image.uri : avatar,
+  //           phone: '',
+  //         }),
+  //       );
+  //       showMessage({
+  //         message: 'Change Information success',
+  //         type: 'success',
+  //         duration: 1500,
+  //       });
+  //     }
+  //   } else {
+  //     const resPhone = isPhoneNumber(phone);
+  //     if (!resPhone) {
+  //       setPhoneError('Phone is not correct');
+  //     }
+  //     setError('Please enter a name');
+  //   }
+  // };
 
   const deleteData = (value: string) => {
     setType(value);
     selectModalRef?.current?.setVisible(true);
   };
 
-  const renderAvatar = () => {
-    if (image?.uri) {
-      return (
-        <ImageLoading
-          resizeMode="cover"
-          source={{uri: image.uri}}
-          iconStyle={styles.avatar}
-        />
-      );
-    } else if (userReducer?.avatar) {
-      return (
-        <ImageLoading
-          resizeMode="cover"
-          source={{uri: userReducer.avatar}}
-          iconStyle={styles.avatar}
-        />
-      );
-    } else {
-      return (
-        <ImageLoading
-          resizeMode="cover"
-          source={Images.defaultAvatar}
-          iconStyle={styles.avatar}
-        />
-      );
-    }
-  };
-  const joinAtApp = new Date(joinAt);
+  // const renderAvatar = () => {
+  //   if (image?.uri) {
+  //     return (
+  //       <ImageLoading
+  //         resizeMode="cover"
+  //         source={{uri: image.uri}}
+  //         iconStyle={styles.avatar}
+  //       />
+  //     );
+  //   } else if (userReducer?.avatar) {
+  //     return (
+  //       <ImageLoading
+  //         resizeMode="cover"
+  //         source={{uri: userReducer.avatar}}
+  //         iconStyle={styles.avatar}
+  //       />
+  //     );
+  //   } else {
+  //     return (
+  //       <ImageLoading
+  //         resizeMode="cover"
+  //         source={Images.defaultAvatar}
+  //         iconStyle={styles.avatar}
+  //       />
+  //     );
+  //   }
+  // };
+  // const joinAtApp = new Date(joinAt);
 
   return (
     <HideKeyboard>
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.avatarHeader}
@@ -140,10 +140,10 @@ const SettingsScreen = () => {
             Join at {joinAtApp.getFullYear()}/{joinAtApp.getMonth()}/
             {joinAtApp.getDate()}
           </Text>
-        </View>
+        </View> */}
 
         <View style={styles.content}>
-          <InputCustom
+          {/* <InputCustom
             showIcon
             sourceIcon={Images.grayUser}
             iconStyle={styles.iconStyle}
@@ -163,7 +163,7 @@ const SettingsScreen = () => {
             txtError={phoneError}
             onChangeText={setPhone}
             onFocus={onFocusPhoneInput}
-          />
+          /> */}
           <ButtonCustom
             txt="Delete all category"
             btnStyles={[styles.btnView, styles.normalView]}
@@ -176,12 +176,12 @@ const SettingsScreen = () => {
             btnTxtStyles={[styles.btnTxt, styles.normalTxt]}
             onPress={() => deleteData('task')}
           />
-          <ButtonCustom
+          {/* <ButtonCustom
             txt="Save"
             btnStyles={[styles.successView, styles.btnView]}
             btnTxtStyles={[styles.successTxt, styles.btnTxt]}
             onPress={onSaveData}
-          />
+          /> */}
         </View>
         <SelectModal type={type} ref={selectModalRef} />
       </SafeAreaView>

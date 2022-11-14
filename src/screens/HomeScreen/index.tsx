@@ -36,7 +36,7 @@ const HomeScreen = () => {
   );
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.infoUser}>
+      {/* <View style={styles.infoUser}>
         {userReducer?.avatar ? (
           <ImageLoading
             resizeMode="cover"
@@ -66,7 +66,7 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
         <TextInput placeholder="Search task..." style={styles.searchInput} />
-      </View>
+      </View> */}
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.titleContentView}>
