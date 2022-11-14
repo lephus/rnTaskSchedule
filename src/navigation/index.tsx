@@ -175,7 +175,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
-        {user.userName.length === 0 && (
+        {/* {user.userName.length === 0 && (
           <Stack.Screen
             name="OnboardingScreen"
             component={OnboardingScreen}
@@ -183,7 +183,7 @@ const AppNavigator = () => {
               headerShown: false,
             }}
           />
-        )}
+        )} */}
         <Stack.Screen
           name="App"
           component={AppStack}
